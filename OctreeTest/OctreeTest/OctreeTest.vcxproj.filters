@@ -30,6 +30,9 @@
     <ClCompile Include="writeBin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PCconvert.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dirent.h">
@@ -51,6 +54,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="writeBin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PCconvert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

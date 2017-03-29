@@ -68,7 +68,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>D:\GitLaserImaging\octree\boost_1_63_0;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -111,6 +113,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="OctreeTest1.cpp" />
+    <ClCompile Include="PCconvert.cpp" />
     <ClCompile Include="pointReader.cpp" />
     <ClCompile Include="potreeWriter.cpp" />
     <ClCompile Include="templateBin.cpp" />
@@ -118,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dirent.h" />
+    <ClInclude Include="PCconvert.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="pointReader.h" />
     <ClInclude Include="potreeWriter.h" />
