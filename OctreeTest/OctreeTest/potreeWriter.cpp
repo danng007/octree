@@ -1,12 +1,12 @@
-#include "potreeWriter.h"
-
-
-
-potreeWriter::potreeWriter()
-{
-}
-
-
-potreeWriter::~potreeWriter()
-{
-}
+//#include "potreeWriter.h"
+//
+//
+//
+//potreeWriter::potreeWriter()
+//{
+//}
+//
+//
+//potreeWriter::~potreeWriter()
+//{
+//}

@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <cstdlib>
 #include <stdio.h>
 #include<math.h>
 #include<vector>
@@ -8,6 +9,7 @@
 #include<direct.h>
 #include "writeBin.h"
 #include "templateBin.h"
+#include <thread>
 using namespace std;
 //Define Octree Class
 template<class T>
@@ -340,6 +342,38 @@ void readBin() {
 	cout << "Finish Read bin" << endl;
 }
 //main
+void threadRun(string dataFilePath, vector<int> levels, vector<long long int> index, vector<long long int> totalIndex, int maxdepth) {
+	double timeLast;
+	double timeBegin;
+	string line;
+	float x, y, z, value, a;
+	int r, g, b;
+	ifstream dataFile;
+	dataFile.open(dataFilePath);
+	templateBin *tb = new templateBin(xmin, xmax, ymin, ymax, zmin, zmax, 0.01, maxdepth);
+	timeBegin = clock();
+	int counter = 0;
+
+	while (getline(dataFile, line))
+	{
+		counter++;
+		//cout << "Inside" << endl;
+		istringstream iss(line);
+
+		if (!(iss >> x >> y >> z >> r >> g >> b >> a)) { break; } // error
+		a = a * 100;
+		tb->calIndex(x, y, z, r, g, b, a, levels, index, totalIndex);
+	}
+
+
+	tb->createAllHrc();
+
+	timeLast = (clock() - timeBegin)*1.0 / CLOCKS_PER_SEC;
+	cout << "*************************************" << endl;
+	cout << "Single Thread Finish Processing Time: " << timeLast << " s" << endl;
+	cout << "Processing Points: "<<counter << endl;
+	cout << "*************************************" << endl;
+}
 int main()
 {
 	double timeLast;
@@ -349,146 +383,108 @@ int main()
 	int indexCounter = 0;
 	cout << "Input Max Depth:" << endl;
 	cin >> maxdepth;
-	vector<long long int>index(maxdepth, 1);
-	vector<long long int>totalIndex(maxdepth, 1);
+	vector<long long>index(maxdepth, 1);
+	vector<long long>totalIndex(maxdepth, 1);
 	vector<int>levels(maxdepth, 1);
 
 	cout << "Input Range of Size\nInput Order:xmin,xmax,ymin,ymax,zmin,zmax" << endl;
 	cin >> xmin >> xmax >> ymin >> ymax >> zmin >> zmax;
 	initialIndex(index, levels, totalIndex, maxdepth);
-	ofstream *binWriter;
-	binWriter = new ofstream("./dataFiles/binoutput.bin", ios::out | ios::binary);
-	ofstream outputFile;
-	outputFile.open("./dataFiles/output1.txt");
-	ifstream dataFile;
-	dataFile.open("./dataFiles/fullTest.txt");
-	string line;
-	float x, y, z, value,a;
-	int r, g, b;
-	//writeBin *wb = new writeBin(xmin, xmax, ymin, ymax, zmin, zmax,100);
 
-	templateBin *tb = new templateBin(xmin, xmax, ymin, ymax, zmin, zmax, 0.01,maxdepth);
-
-	/* timeBegin = clock();
-	tb->createAllHrc();
-	 timeLast = (clock() - timeBegin)*1.0 / CLOCKS_PER_SEC;
-	cout << "*************************************" << endl;
-	cout << "HRC Processing Time: " << timeLast << " s" << endl;
-	cout << "*************************************" << endl;
-*/
+	
+	string path1 = "./dataFiles/thretest1.txt";
+	string path2 = "./dataFiles/thretest2.txt";
 	timeBegin = clock();
-	int counter = 0;
-	
-	//ofstream *testBin = new ofstream("./dataFiles/r/r.bin", ios::out | ios::binary | ofstream::app);
-	while (getline(dataFile, line))
-	{
-		counter++;
-		//cout << "Inside" << endl;
-		istringstream iss(line);
-
-		if (!(iss >> x >> y >> z >> r >> g >> b >> a)) { break; } // error
-		a = a * 100;
-		tb->calIndex(x,y,z,r,g,b,a,levels,index,totalIndex);
-	}
-	
-	
-	//tb->~templateBin();
-	//templateBin *hrc = new templateBin(xmin, xmax, ymin, ymax, zmin, zmax, 100, maxdepth);
-	//tb-> templateBin(xmin, xmax, ymin, ymax, zmin, zmax, 100, maxdepth);
-	//tb->binWriter->close();
-	//ofstream::rdbuf()->close();
-	//filebuf* outbuf = tb->binWriter->rdbuf();
-	//ofstream of2("./dataFiles/test2.txt");
-	
-	
-	tb->createAllHrc();
-
+	thread t1(threadRun, path1, levels, index, totalIndex, maxdepth);
+	thread t2(threadRun, path2, levels, index, totalIndex, maxdepth);
+	t1.join();
+	t2.join();
 	timeLast = (clock() - timeBegin)*1.0 / CLOCKS_PER_SEC;
 	cout << "*************************************" << endl;
-	cout << "Finish Processing Time: " << timeLast << " s" << endl;
-	cout << counter << endl;
+	cout << "In Total Finish Processing Time: " << timeLast << " s" << endl;
 	cout << "*************************************" << endl;
-	cin >> x;
+	int endx;
+	cin >> endx;
 
 
 
-	OctreeNode<float> * rootNode = NULL;
-	int choiced = 0;
-	while (true)
-	{
-		system("cls");
-		cout << "Options:\n";
-		cout << "1.Create Octree\n2.Pre-order Octree\n";
-		cout << "3.Check Tree Depth\n4.Search Point in Tree   \n";
-		cout << "5.Self Calculation Test\n";
-		cout << "0.Exit\n\n";
-		cin >> choiced;
-		if (choiced == 0)
-			return 0;
-		else if (choiced == 1)
-		{
-			system("cls");
-			cout << "Input Max Depth:" << endl;
-			cin >> maxdepth;
+	//OctreeNode<float> * rootNode = NULL;
+	//int choiced = 0;
+	//while (true)
+	//{
+	//	system("cls");
+	//	cout << "Options:\n";
+	//	cout << "1.Create Octree\n2.Pre-order Octree\n";
+	//	cout << "3.Check Tree Depth\n4.Search Point in Tree   \n";
+	//	cout << "5.Self Calculation Test\n";
+	//	cout << "0.Exit\n\n";
+	//	cin >> choiced;
+	//	if (choiced == 0)
+	//		return 0;
+	//	else if (choiced == 1)
+	//	{
+	//		system("cls");
+	//		cout << "Input Max Depth:" << endl;
+	//		cin >> maxdepth;
 
-			cout << "Input Range of Size. Input Order:xmin,xmax,ymin,ymax,zmin,zmax" << endl;
-			cin >> xmin >> xmax >> ymin >> ymax >> zmin >> zmax;
-			if (maxdepth >= 0 || xmax>xmin || ymax>ymin || zmax>zmin || xmin>0 || ymin>0 || zmin>0)
-			{
-				tmaxdepth = cal(maxdepth);
-				txm = (xmax - xmin) / tmaxdepth;
-				tym = (ymax - ymin) / tmaxdepth;
-				tzm = (zmax - zmin) / tmaxdepth;
-				//createOctree(rootNode,maxdepth,xmin,xmax,ymin,ymax,zmin,zmax,&indexCounter);
-			}
-			else
-			{
-				cout << "Wrong Input";
-				return 0;
-			}
-		}
-		else if (choiced == 2)
-		{
-			system("cls");
-			cout << "Pre-order print Octree\n";
-			i = 1;
-			preOrder(rootNode);
-			cout << endl;
-			system("pause");
-		}
-		else if (choiced == 3)
-		{
-			system("cls");
-			int dep = depth(rootNode);
-			cout << "Depth of the Tree:\n" << dep + 1 << endl;
-			system("pause");
-		}
-		else if (choiced == 4)
-		{
-			system("cls");
-			cout << "Input search point coordinate, order:x,y,z\n";
-			double x, y, z;
-			cin >> x >> y >> z;
-			times = 0;
-			cout << endl << "Search Processing..." << endl;
-			find(rootNode, x, y, z);
-			system("pause");
-		}
-		else if (choiced == 5) {
-			system("cls");
-			cout << "Input search point coordinate, order:x,y,z\n";
-			double x, y, z;
-			cin >> x >> y >> z;
-			times = 0;
-			calIndex(x, y, z, levels, index, totalIndex, maxdepth, outputFile);
+	//		cout << "Input Range of Size. Input Order:xmin,xmax,ymin,ymax,zmin,zmax" << endl;
+	//		cin >> xmin >> xmax >> ymin >> ymax >> zmin >> zmax;
+	//		if (maxdepth >= 0 || xmax>xmin || ymax>ymin || zmax>zmin || xmin>0 || ymin>0 || zmin>0)
+	//		{
+	//			tmaxdepth = cal(maxdepth);
+	//			txm = (xmax - xmin) / tmaxdepth;
+	//			tym = (ymax - ymin) / tmaxdepth;
+	//			tzm = (zmax - zmin) / tmaxdepth;
+	//			//createOctree(rootNode,maxdepth,xmin,xmax,ymin,ymax,zmin,zmax,&indexCounter);
+	//		}
+	//		else
+	//		{
+	//			cout << "Wrong Input";
+	//			return 0;
+	//		}
+	//	}
+	//	else if (choiced == 2)
+	//	{
+	//		system("cls");
+	//		cout << "Pre-order print Octree\n";
+	//		i = 1;
+	//		preOrder(rootNode);
+	//		cout << endl;
+	//		system("pause");
+	//	}
+	//	else if (choiced == 3)
+	//	{
+	//		system("cls");
+	//		int dep = depth(rootNode);
+	//		cout << "Depth of the Tree:\n" << dep + 1 << endl;
+	//		system("pause");
+	//	}
+	//	else if (choiced == 4)
+	//	{
+	//		system("cls");
+	//		cout << "Input search point coordinate, order:x,y,z\n";
+	//		double x, y, z;
+	//		cin >> x >> y >> z;
+	//		times = 0;
+	//		cout << endl << "Search Processing..." << endl;
+	//		find(rootNode, x, y, z);
+	//		system("pause");
+	//	}
+	//	else if (choiced == 5) {
+	//		system("cls");
+	//		cout << "Input search point coordinate, order:x,y,z\n";
+	//		double x, y, z;
+	//		cin >> x >> y >> z;
+	//		times = 0;
+	//		calIndex(x, y, z, levels, index, totalIndex, maxdepth, outputFile);
 
-			system("pause");
-		}
-		else
-		{
-			system("cls");
-			cout << "\n\nWrong Choice\n";
-			system("pause");
-		}
-	}
+	//		system("pause");
+	//	}
+	//	else
+	//	{
+	//		system("cls");
+	//		cout << "\n\nWrong Choice\n";
+	//		system("pause");
+	//	}
+	//}
 }

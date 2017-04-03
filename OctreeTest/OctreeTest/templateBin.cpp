@@ -331,24 +331,24 @@ void templateBin::calIndex(float xin, float yin, float zin, unsigned char r, uns
 		
 	}
 	
-	if (levelNow >= 7)
-	{
-		/*if (levels[4]==3&&levels[5]==7)
-		{
-			int tests = 0;
-		}
-		for (int j = 1; j < 6; j++)
-		{
-			folderIndex += to_string(levels[j] - 1);
-		}*/
-		dest += indexs;
-		_mkdir(dest.c_str());
-		filePath = dest + "/r" + indexs + ".bin";
-	}
-	else
-	{
+	//if (levelNow >= 7)
+	//{
+	//	/*if (levels[4]==3&&levels[5]==7)
+	//	{
+	//		int tests = 0;
+	//	}
+	//	for (int j = 1; j < 6; j++)
+	//	{
+	//		folderIndex += to_string(levels[j] - 1);
+	//	}*/
+	//	dest += indexs;
+	//	_mkdir(dest.c_str());
+	//	filePath = dest + "/r" + indexs + ".bin";
+	//}
+	//else
+	//{
 		filePath = basePath +"r"+ indexs + ".bin";
-	}
+	//}
 	//cout << levelNow << " " << newMinX << " " << newMinY << " " << newMinZ << endl;;
 
 	writeBinValue(x, y, z, r, g, b, a, filePath, newMinX,newMinY,newMinZ);
