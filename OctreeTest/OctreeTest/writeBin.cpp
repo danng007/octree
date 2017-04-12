@@ -32,12 +32,12 @@ void writeBin::loopAllDir() {
 					continue;
 				}
 				files = string(ent->d_name);
-				folderName = basePath+files;
+				folderName = basePath + files;
 				files.pop_back();
-				files = basePath +"r"+ files + ".bin";
+				files = basePath + "r" + files + ".bin";
 				cout << "Parent Loop: " << files << endl;
-				createParentFile( folderName, files);
-				
+				createParentFile(folderName, files);
+
 				break;
 
 			default:
@@ -56,7 +56,7 @@ void writeBin::createParentFile(string& folderName, string& filePath) {
 	string files;
 	char* buffer;
 	ofstream *binWriter;
-	binWriter = new ofstream(filePath, ios::out | ios::binary| ofstream::app);
+	binWriter = new ofstream(filePath, ios::out | ios::binary | ofstream::app);
 	ifstream *binReader;
 	bool skipC = false;
 	dir = opendir(folderName.c_str());
@@ -65,15 +65,15 @@ void writeBin::createParentFile(string& folderName, string& filePath) {
 		while ((ent = readdir(dir)) != NULL) {
 			switch (ent->d_type) {
 			case DT_REG:
-				cout << "Child Loop 1: "<<ent->d_name << endl;
+				cout << "Child Loop 1: " << ent->d_name << endl;
 				files = folderName + "/" + string(ent->d_name);
-				binReader = new ifstream(files, ios::in|ios::binary);
+				binReader = new ifstream(files, ios::in | ios::binary);
 				//binReader->unsetf(std::ios_base::skipws);
 				// count the newlines with an algorithm specialized for counting:
 				while (binReader->good()) {
 					if (skipC)
 					{
-						
+
 						buffer = new char[16];
 						binReader->read(buffer, 16); //1 size byte for 2 number
 						binWriter->write(buffer, 16);
@@ -96,7 +96,7 @@ void writeBin::createParentFile(string& folderName, string& filePath) {
 				cout << "Child Loop 3: " << ent->d_name << endl;
 			}
 		}
-		
+
 		cout << "Test Counter " << testCounter << endl;
 		closedir(dir);
 	}
@@ -152,7 +152,7 @@ void writeBin::calIndex(float xin, float yin, float zin, unsigned char r, unsign
 	//cout << dest << endl;
 	_mkdir(dest.c_str());
 	string filePath = dest + "/r" + indexs + ".bin";
-	writeBinValue(x,y,z,r,g,b,a,filePath);
+	writeBinValue(x, y, z, r, g, b, a, filePath);
 
 }
 
@@ -166,5 +166,5 @@ void writeBin::writeBinValue(float x, float y, float z, int r, int g, int b, int
 	binWriter->write((const char*)rgba, 4 * sizeof(unsigned  char));
 	binWriter->flush();
 	//calIndex(x, y, z, levels, index, totalIndex, maxdepth, outputFile);
-		//Comment: process pair(a, b)
+	//Comment: process pair(a, b)
 }

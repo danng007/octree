@@ -17,6 +17,8 @@
 #include<utility>
 #include<tuple>
 using namespace std;
+
+
 class templateBin
 {
 public:
@@ -29,18 +31,23 @@ public:
 	void createAllHrc();
 	ofstream *binWriter;
 	void createHrc(string hrcName, string folderStr, int startLevel);
-	
+
 private:
-	
+
 	int calLevelIndex(int depth, int length, int width);
 	//int arg[4][40] = { { 8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5 },{ 7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8 },{ 8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4 },{ 7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8 } };
-	int arg[40][40][40] = { 0 };
+	//int* arr = new int[40 * 40 * 40];
+	typedef int SPACE2D_t[128][128];
+	SPACE2D_t* arr = new SPACE2D_t[128];
+	
+	
+	//template<int> Array3D arr(256);
 	int maxDepth;
 	char returnChildHrc(string& filePath, int level);
 	char returnFinChildHrc(string& filePath, int level);
 	float x, y, z;
 	void writeBinValue(float x, float y, float z, int r, int g, int b, int a, string& filePath, float newMinX, float newMinY, float newMinZ);
 	int countRows(string& filePath);
-	
+
 };
 

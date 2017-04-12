@@ -359,9 +359,14 @@ void threadRun(string dataFilePath, vector<int> levels, vector<long long int> in
 		counter++;
 		//cout << "Inside" << endl;
 		istringstream iss(line);
-
+	
 		if (!(iss >> x >> y >> z >> r >> g >> b >> a)) { break; } // error
 		a = a * 100;
+		if (x < 8.75 && x > 8.73 && z > 140.44 && z < 140.46)
+		{
+			int testt;
+			testt= 0;
+		}
 		tb->calIndex(x, y, z, r, g, b, a, levels, index, totalIndex);
 	}
 
@@ -371,7 +376,7 @@ void threadRun(string dataFilePath, vector<int> levels, vector<long long int> in
 	timeLast = (clock() - timeBegin)*1.0 / CLOCKS_PER_SEC;
 	cout << "*************************************" << endl;
 	cout << "Single Thread Finish Processing Time: " << timeLast << " s" << endl;
-	cout << "Processing Points: "<<counter << endl;
+	cout << "Processing Points: " << counter << endl;
 	cout << "*************************************" << endl;
 }
 int main()
@@ -387,16 +392,22 @@ int main()
 	vector<long long>totalIndex(maxdepth, 1);
 	vector<int>levels(maxdepth, 1);
 
+	vector<long long>index2(maxdepth, 1);
+	vector<long long>totalIndex2(maxdepth, 1);
+	vector<int>levels2(maxdepth, 1);
 	cout << "Input Range of Size\nInput Order:xmin,xmax,ymin,ymax,zmin,zmax" << endl;
 	cin >> xmin >> xmax >> ymin >> ymax >> zmin >> zmax;
 	initialIndex(index, levels, totalIndex, maxdepth);
+	initialIndex(index2, levels2, totalIndex2, maxdepth);
 
-	
+
 	string path1 = "./dataFiles/thretest1.txt";
 	string path2 = "./dataFiles/thretest2.txt";
+	
+	// path1 = "./dataFiles/fullTest.txt";
 	timeBegin = clock();
 	thread t1(threadRun, path1, levels, index, totalIndex, maxdepth);
-	thread t2(threadRun, path2, levels, index, totalIndex, maxdepth);
+	thread t2(threadRun, path2, levels2, index2, totalIndex2, maxdepth);
 	t1.join();
 	t2.join();
 	timeLast = (clock() - timeBegin)*1.0 / CLOCKS_PER_SEC;
