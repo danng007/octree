@@ -1,0 +1,78 @@
+--- OctreeTest/OctreeTest/OctreeTest1.cpp	
++++ OctreeTest/OctreeTest/OctreeTest1.cpp	
+@@ -308,66 +308,38 @@
+ 		totalIndex[maxdepth - 1 - i] = pow(8, i) + totalIndex[maxdepth - i];
+ 	}
+ }
+-void readBin() {
+-	cout << "Read bin" << endl;
+-	ifstream *binFile;
+-	binFile = new ifstream("./dataFiles/r07656.bin", ios::in | ios::binary);
+-	int c;
+-	
+-	while (binFile->good()) {
+-		cout << "Processing Read bin" << endl;
+-		char* buffer = new char[16];
+-		binFile->read(buffer, 16); //1 size byte for 2 number
+-		int* iBuffer = reinterpret_cast<int*>(buffer);
+-		cout << iBuffer[0] << endl;
+-		cout << iBuffer[1] << endl;
+-		cout << iBuffer[2] << endl;
+-		unsigned char* ucBuffer = reinterpret_cast<unsigned char*>(buffer + 12);
+-		cout << float(ucBuffer[0]) << endl;
+-		cout << float(ucBuffer[1]) << endl;
+-		cout << float(ucBuffer[2]) << endl;
+-		cout << float(ucBuffer[3]) << endl;
+-	}
+-	cout << "Finish Read bin" << endl;
+-}
+ //main
+ int main()
+ {
+-	//readBin();
++
+ 	int maxdepth = 0;
+ 	int indexCounter = 0;
+ 	cout << "Input Max Depth:" << endl;
+-	//cin >> maxdepth;
++	cin >> maxdepth;
+ 	vector<long long int>index (maxdepth,1);
+ 	vector<long long int>totalIndex(maxdepth, 1);
+ 	vector<int>levels (maxdepth, 1);
+ 
+ 	cout << "Input Range of Size\nInput Order:xmin,xmax,ymin,ymax,zmin,zmax" << endl;
+-	//cin >> xmin >> xmax >> ymin >> ymax >> zmin >> zmax;
+-	//initialIndex(index, levels, totalIndex,maxdepth);
+-	ofstream *binWriter;
+-	binWriter = new ofstream("./dataFiles/binoutput.bin", ios::out | ios::binary);
++	cin >> xmin >> xmax >> ymin >> ymax >> zmin >> zmax;
++	initialIndex(index, levels, totalIndex,maxdepth);
++	
+ 	ofstream outputFile;
+ 	outputFile.open("./dataFiles/output1.txt");
+ 	ifstream dataFile;
+-	dataFile.open("./dataFiles/oneRowTest.txt");
++	dataFile.open("./dataFiles/smallscene01.txt");
+ 	string line;
+-	float x, y, z,value;
+-	unsigned char r, g, b, a;
++	float x, y, z, value;
+ 	double timeBegin = clock();
+ 	while (getline(dataFile, line))
+ 	{
+ 		//cout << "Inside" << endl;
+ 		istringstream iss(line);
+ 
+-		if (!(iss >> x >> y >> z >>r>>g>>b>>a)) { break; } // error
++		if (!(iss >> x >> y >> z >> value)) { break; } // error
+ 		//cout << x << " " << y << " " << z << endl;
+ 		outputFile << x << " " << y << " " << z << endl;
+-		int pos[3] = { x,y,z };
+-		binWriter->write((const char*)pos, 3*sizeof(int));
+-		unsigned char rgba[4] = { r,g,b,a };
+-		binWriter->write((const char*)rgba, 4 * sizeof(unsigned  char));
+-		//calIndex(x, y, z, levels, index, totalIndex, maxdepth,outputFile);
++		calIndex(x, y, z, levels, index, totalIndex, maxdepth,outputFile);
+ 		// process pair (a,b)
+ 	}
+ 	double timeLast = (clock() - timeBegin)*1.0 / CLOCKS_PER_SEC;

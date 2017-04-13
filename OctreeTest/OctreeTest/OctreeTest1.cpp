@@ -370,8 +370,8 @@ void threadRun(string dataFilePath, vector<int> levels, vector<long long int> in
 		tb->calIndex(x, y, z, r, g, b, a, levels, index, totalIndex);
 	}
 
-
-	tb->createAllHrc();
+	tb->~templateBin();
+	
 
 	timeLast = (clock() - timeBegin)*1.0 / CLOCKS_PER_SEC;
 	cout << "*************************************" << endl;
@@ -401,15 +401,16 @@ int main()
 	initialIndex(index2, levels2, totalIndex2, maxdepth);
 
 
-	string path1 = "./dataFiles/thretest1.txt";
-	string path2 = "./dataFiles/thretest2.txt";
-	
+	string path1 = "D:/LaserImaging/dataFiles/smallSplitTest1.txt";
+	string path2 = "D:/LaserImaging/dataFiles/smallSplitTest2.txt";
 	// path1 = "./dataFiles/fullTest.txt";
 	timeBegin = clock();
 	thread t1(threadRun, path1, levels, index, totalIndex, maxdepth);
 	thread t2(threadRun, path2, levels2, index2, totalIndex2, maxdepth);
 	t1.join();
 	t2.join();
+	templateBin *tb = new templateBin(xmin, xmax, ymin, ymax, zmin, zmax, 0.01, maxdepth);
+	tb->createAllHrc();
 	timeLast = (clock() - timeBegin)*1.0 / CLOCKS_PER_SEC;
 	cout << "*************************************" << endl;
 	cout << "In Total Finish Processing Time: " << timeLast << " s" << endl;

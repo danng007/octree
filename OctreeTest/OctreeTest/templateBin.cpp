@@ -4,6 +4,7 @@
 
 templateBin::templateBin(double Xmin, double Xmax, double Ymin, double Ymax, double Zmin, double Zmax, float Scale, int Maxdepth)
 {
+	folderSplitLevel = 6;
 	xmax = Xmax;
 	xmin = Xmin;
 	ymin = Ymin;
@@ -36,13 +37,16 @@ templateBin::~templateBin()
 }
 
 void templateBin::createAllHrc() {
+	char childV;
+	int rowCounter;
 	delete[] arr;
 	int skipCounter = 2;
 	string rootHrcName = "r.hrc";
-	createHrc(rootHrcName, basePath, 0);
+	//6 means split in level 6, so calculate level 6 folder's hrc for root
+	createHrc(rootHrcName, basePath, folderSplitLevel-1);
+	rootWriter = new ofstream(basePath + rootHrcName, ios::out | ios::binary | ofstream::app);
 	string hrcName = "";
 	string folderStr = "";
-	//	createHrc(hrcName,folderStr,7);
 	string files;
 	DIR *dir;
 	struct dirent *ent;
@@ -61,7 +65,17 @@ void templateBin::createAllHrc() {
 				hrcName = ent->d_name;
 				folderStr = basePath + hrcName + "/";
 				hrcName = "r" + hrcName + ".hrc";
-				createHrc(hrcName, folderStr, maxDepth - 1);
+				//Set a large number:1000, means no split for subsubfolder
+				createHrc(hrcName, folderStr, folderSplitLevel);
+				//cout << folderStr + hrcName<<"!" << endl;
+				hrcReader = new ifstream(folderStr+hrcName, ios::in | ios::binary);
+				if (hrcReader->good())
+				{
+					//cout << folderStr + hrcName << "!" << endl;
+					hrcReader->read(buffer,5);
+					rootWriter->write(buffer, 5);
+					rootWriter->flush();
+				}
 				break;
 			default:
 				printf("%s:\n", ent->d_name);
@@ -71,12 +85,14 @@ void templateBin::createAllHrc() {
 	closedir(dir);
 
 }
-void templateBin::createHrc(string hrcName, string folderStr, int startLevel) {
+
+void templateBin::createHrc(string hrcName, string folderStr, int splitLevel) {
 
 	//ofstream *hrcWriter;
 	//string hrcName = "r.hrc";
 
 	binWriter = new ofstream(folderStr + hrcName, ios::out | ios::binary | ofstream::app);
+	
 	//*binWriter << fflush;
 
 	char childV = 0;
@@ -93,21 +109,20 @@ void templateBin::createHrc(string hrcName, string folderStr, int startLevel) {
 			while ((ent = readdir(dir)) != NULL) {
 				switch (ent->d_type) {
 				case DT_REG:
-
 					files = ent->d_name;
 					if (files.compare(hrcName) == 0)
 					{
 						break;
 					}
 					fileLength = files.length();
-					if (fileLength == i + 5 + startLevel)
+					if (fileLength == i + 5 )
 					{
 						//cout << files << " " << fileLength <<endl;//char 1 = int 49;
-						childV = returnChildHrc(files, i);
-						binWriter->write((const char*)(&childV), 1);
-						rowCounter = countRows(folderStr + files);
-						binWriter->write((const char*)(&rowCounter), 4);
-						binWriter->flush();
+							childV = returnChildHrc(folderStr, files, i);
+							binWriter->write((const char*)(&childV), 1);
+							rowCounter = countRows(folderStr + files);
+							binWriter->write((const char*)(&rowCounter), 4);
+							binWriter->flush();
 						//cout << files << " : " <<childV<< endl;
 					}
 					break;
@@ -122,40 +137,10 @@ void templateBin::createHrc(string hrcName, string folderStr, int startLevel) {
 		closedir(dir);
 		childV = 0;
 	}
-
-
-	dir = opendir(folderStr.c_str());
-	if (dir != NULL) {
-		while ((ent = readdir(dir)) != NULL) {
-			switch (ent->d_type) {
-			case DT_REG:
-				break;
-			case DT_DIR:
-				files = ent->d_name;
-				fileLength = files.length();
-				if (fileLength == 5)
-				{
-					//cout << files << " " << fileLength << endl;//char 1 = int 49;
-					childV = returnFinChildHrc(files, maxDepth - 1);
-					binWriter->write((const char*)(&childV), 1);
-					countFile = folderStr + files + "/r" + files + ".bin";
-					rowCounter = countRows(countFile);
-					binWriter->write((const char*)(&rowCounter), 4);
-					binWriter->flush();
-					//cout << files << " : " << childV << endl;
-				}
-				break;
-			default:
-				printf("%s:\n", ent->d_name);
-			}
-		}
-	}
-
-	closedir(dir);
-	childV = 0;
+	
 	binWriter->close();
 }
-char templateBin::returnChildHrc(string& filePath, int level) {
+char templateBin::returnChildHrc(string& fileFolderPath, string& filePath, int level) {
 	char resultV = 0;
 	string files;
 	string childFile = "";
@@ -163,7 +148,7 @@ char templateBin::returnChildHrc(string& filePath, int level) {
 	DIR *dir;
 	struct dirent *ent;
 	int indexV;
-	dir = opendir(basePath.c_str());
+	dir = opendir(fileFolderPath.c_str());
 	if (dir != NULL) {
 		while ((ent = readdir(dir)) != NULL) {
 			switch (ent->d_type) {
@@ -177,12 +162,26 @@ char templateBin::returnChildHrc(string& filePath, int level) {
 					{
 						indexV = int(files[level + 1]) - 48;
 						//cout << files << " " << fileLength << " " << indexV << endl;//char 1 = int 49;
-
 						resultV = resultV | (1 << indexV);
 					}
 				}
 				break;
 			case DT_DIR:
+				if (level == folderSplitLevel-2)
+				{
+					files = ent->d_name;
+					fileLength = files.length();
+					if (fileLength == folderSplitLevel-1)
+					{
+						childFile = filePath.substr(1, folderSplitLevel-2)+files[level];
+						if (childFile.compare(files) == 0)
+						{
+							indexV = int(files[level]) - 48;
+							//cout << files << " " << fileLength << " " << indexV << endl;//char 1 = int 49;
+							resultV = resultV | (1 << indexV);
+						}
+					}
+				}
 				break;
 			default:
 				printf("%s:\n", ent->d_name);
@@ -250,23 +249,52 @@ int templateBin::calLevelIndex(int depth, int length, int width) {
 	depth = (xmax - depth) / (xmax - xmin) * 128;
 	length = (ymax - length) / (ymax - ymin) * 128;
 	width = (zmax - width) / (zmax - zmin) * 128;
-	if (depth >= 128 || length >= 128 || width>=128)
+	//If point outside of current box
+	if (depth >= 128 )
 	{
-		int testt;
-		testt = 1;
-
+		depth = 128;
 	}
-	
+	if (width >= 128)
+	{
+		width = 128;
+	}
+	if (length >= 128)
+	{
+		length = 128;
+	}
 	arr[depth][length][width]++;
 	//cout << depth << " " << length << " " << width <<" "<< arr[depth][length][width]<< endl;
-	if (arr[depth][length][width] < maxDepth)
+	if (arr[depth][length][width] < 4)
 	{
-		return arr[depth][length][width];
+		return 1;
 	}
-	else
+	if (arr[depth][length][width] < 7)
 	{
-		return maxDepth;
+		return 2;
 	}
+	if (arr[depth][length][width] < 10)
+	{
+		return 3;
+	}
+	if (arr[depth][length][width] < 13)
+	{
+		return 4;
+	}
+	if (arr[depth][length][width] < 16)
+	{
+		return 5;
+	}
+	if (arr[depth][length][width] < 19)
+	{
+		return 6;
+	}
+	if (arr[depth][length][width] < 22)
+	{
+		return 7;
+	}
+	
+	return maxDepth;
+
 	//return arr[depth][length][width];
 	//return 1;
 
@@ -349,29 +377,25 @@ void templateBin::calIndex(float xin, float yin, float zin, unsigned char r, uns
 		indexs += to_string(levels[i] - 1);
 
 	}
-	if (!indexs.compare("16626"))
+
+	if (levelNow >= folderSplitLevel)
 	{
-		int testt;
-		testt = 0;
+		/*if (levels[4]==3&&levels[5]==7)
+		{
+			int tests = 0;
+		}*/
+		for (int j = 1; j <= folderSplitLevel-1; j++)
+		{
+			folderIndex += to_string(levels[j] - 1);
+		}
+		dest += folderIndex;
+		_mkdir(dest.c_str());
+		filePath = dest + "/r" + indexs + ".bin";
 	}
-	//if (levelNow >= 7)
-	//{
-	//	/*if (levels[4]==3&&levels[5]==7)
-	//	{
-	//		int tests = 0;
-	//	}
-	//	for (int j = 1; j < 6; j++)
-	//	{
-	//		folderIndex += to_string(levels[j] - 1);
-	//	}*/
-	//	dest += indexs;
-	//	_mkdir(dest.c_str());
-	//	filePath = dest + "/r" + indexs + ".bin";
-	//}
-	//else
-	//{
+	else
+	{
 	filePath = basePath + "r" + indexs + ".bin";
-	//}
+	}
 	//cout << levelNow << " " << newMinX << " " << newMinY << " " << newMinZ << endl;;
 
 	writeBinValue(x, y, z, r, g, b, a, filePath, newMinX, newMinY, newMinZ);
@@ -382,10 +406,11 @@ void templateBin::writeBinValue(float x, float y, float z, int r, int g, int b, 
 	y -= newMinY;
 	z -= newMinZ;
 	binWriter = new ofstream(filePath, ios::out | ios::binary | ofstream::app);
-	if (y*scale + ymin > ymax)
+	//test code
+	/*if (y*scale + ymin > ymax)
 	{
 		int a = 1;
-	}
+	}*/
 	//cout << x << " " << y << " " << z << endl;
 	int pos[3] = { x,y,z };
 	binWriter->write((const char*)pos, 3 * sizeof(int));

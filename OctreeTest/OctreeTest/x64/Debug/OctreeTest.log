@@ -1,0 +1,19 @@
+﻿  templateBin.cpp
+d:\system_code\octreetest\octreetest\templatebin.cpp(41): warning C4101: “rowCounter”: 未引用的局部变量
+d:\system_code\octreetest\octreetest\templatebin.cpp(40): warning C4101: “childV”: 未引用的局部变量
+d:\system_code\octreetest\octreetest\templatebin.cpp(117): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+d:\system_code\octreetest\octreetest\templatebin.cpp(157): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+d:\system_code\octreetest\octreetest\templatebin.cpp(173): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+d:\system_code\octreetest\octreetest\templatebin.cpp(210): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+d:\system_code\octreetest\octreetest\templatebin.cpp(249): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+d:\system_code\octreetest\octreetest\templatebin.cpp(250): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+d:\system_code\octreetest\octreetest\templatebin.cpp(251): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+d:\system_code\octreetest\octreetest\templatebin.cpp(300): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+d:\system_code\octreetest\octreetest\templatebin.cpp(301): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+d:\system_code\octreetest\octreetest\templatebin.cpp(302): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+d:\system_code\octreetest\octreetest\templatebin.cpp(308): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+d:\system_code\octreetest\octreetest\templatebin.cpp(390): warning C4838: 从“float”转换到“int”需要收缩转换
+d:\system_code\octreetest\octreetest\templatebin.cpp(390): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
+d:\system_code\octreetest\octreetest\templatebin.cpp(392): warning C4838: 从“int”转换到“unsigned char”需要收缩转换
+  OctreeTest.vcxproj -> D:\System_Code\OctreeTest\x64\Debug\OctreeTest.exe
+  OctreeTest.vcxproj -> D:\System_Code\OctreeTest\x64\Debug\OctreeTest.pdb (Partial PDB)

@@ -18,45 +18,51 @@
     <ClCompile Include="OctreeTest1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pointReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="potreeWriter.cpp">
+    <ClCompile Include="writeBin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="templateBin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="writeBin.cpp">
+    <ClCompile Include="potreeWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PCconvert.cpp">
+    <ClCompile Include="pointReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PConvert.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="readBag.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="writeBin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="dirent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Point.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pointReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="potreeWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="templateBin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="potreeWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pointReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Vector3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="writeBin.h">
+    <ClInclude Include="PConvert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PCconvert.h">
+    <ClInclude Include="readBag.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
