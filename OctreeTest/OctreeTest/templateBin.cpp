@@ -232,6 +232,19 @@ char templateBin::returnFinChildHrc(string& filePath, int level) {
 	return resultV;
 }
 
+void templateBin::calBasePath(double x, double y, double z) {
+	//Center point is the center of center box: (0,0,0). Length of cube is 200. 
+	//So center box is: (-100,100)
+	//int / will remove fractional part auto
+	int basePosition[3] = { 0 };
+	basePosition[0] = x / 100;
+	basePosition[1] = y / 100;
+	basePosition[2] = z / 100;
+	string newBasePath;
+	newBasePath = "P_" + to_string(basePosition[0]) + "_" + to_string(basePosition[1]) + "_" + to_string(basePosition[2])+"/data/r/";
+	
+}
+
 int templateBin::countRows(string& filePath) {
 	int result = 0;
 	ifstream *binReader;
@@ -399,10 +412,10 @@ void templateBin::calIndex(float xin, float yin, float zin, unsigned char r, uns
 	* |/   |/
 	* 0----4
 	*/
-	if (yin<0)
+	/*if (yin<0)
 	{
 		yin = -yin;
-	}
+	}*/
 	string filePath = "";
 	x = xin / scale;
 	y = yin / scale;
@@ -502,21 +515,18 @@ void templateBin::writeBinValue(float x, float y, float z, int r, int g, int b, 
 	case 1:
 		
 		rootfile->write((const char*)pos, 3 * sizeof(int));
-	
 		rootfile->write((const char*)rgba, 4 * sizeof(unsigned  char));
 		rootfile->flush();
 		break;
 	case 2:
 	
 		levelOneStreams[levels[1] - 1]->write((const char*)pos, 3 * sizeof(int));
-	
 		levelOneStreams[levels[1] - 1]->write((const char*)rgba, 4 * sizeof(unsigned  char));
 		levelOneStreams[levels[1] - 1]->flush();
 		break;
 	case 3:
 	
 		levelTwoStreams[levels[1] - 1][levels[2] - 1]->write((const char*)pos, 3 * sizeof(int));
-		
 		levelTwoStreams[levels[1] - 1][levels[2] - 1]->write((const char*)rgba, 4 * sizeof(unsigned  char));
 		levelTwoStreams[levels[1] - 1][levels[2] - 1]->flush();
 		break;

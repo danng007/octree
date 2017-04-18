@@ -307,18 +307,6 @@ void calIndex(float x, float y, float z, vector<int> levels, vector<long long in
 	outputFile << levels[maxdepth - 1] << " " << index[maxdepth - 1] << endl;
 	//this line will write only last level into file
 }
-void initialIndex(vector<long long int> &index, vector<int> &levels, vector<long long int> &totalIndex, int maxdepth) {
-
-	totalIndex[maxdepth - 1] = 1;
-	index[maxdepth - 1] = 0;
-	levels[maxdepth - 1] = 8;
-	for (int i = 1; i < maxdepth; i++)
-	{
-		index[i] = 0;
-		levels[i] = 8;
-		totalIndex[maxdepth - 1 - i] = pow(8, i) + totalIndex[maxdepth - i];
-	}
-}
 void readBin() {
 	cout << "Read bin" << endl;
 	ifstream *binFile;
@@ -341,6 +329,19 @@ void readBin() {
 	}
 	cout << "Finish Read bin" << endl;
 }
+void initialIndex(vector<long long int> &index, vector<int> &levels, vector<long long int> &totalIndex, int maxdepth) {
+
+	totalIndex[maxdepth - 1] = 1;
+	index[maxdepth - 1] = 0;
+	levels[maxdepth - 1] = 8;
+	for (int i = 1; i < maxdepth; i++)
+	{
+		index[i] = 0;
+		levels[i] = 8;
+		totalIndex[maxdepth - 1 - i] = pow(8, i) + totalIndex[maxdepth - i];
+	}
+}
+
 //main
 void threadRun(string dataFilePath, vector<int> levels, vector<long long int> index, vector<long long int> totalIndex, int maxdepth) {
 	double timeLast;
@@ -365,10 +366,9 @@ void threadRun(string dataFilePath, vector<int> levels, vector<long long int> in
 		a = a * 100;
 		tb->calIndex(x, y, z, r, g, b, a, levels, index, totalIndex);
 	}
-	//tb->closeStreams();
+	tb->closeStreams();
 	tb->~templateBin();
 	
-
 	timeLast = (clock() - timeBegin)*1.0 / CLOCKS_PER_SEC;
 	cout << "*************************************" << endl;
 	cout << "Single Thread Finish Processing Time: " << timeLast << " s" << endl;
@@ -396,9 +396,8 @@ int main()
 	initialIndex(index, levels, totalIndex, maxdepth);
 	initialIndex(index2, levels2, totalIndex2, maxdepth);
 
-
-	string path1 = "D:/LaserImaging/dataFiles/largeSplitTest1.txt";
-	string path2 = "D:/LaserImaging/dataFiles/largeSplitTest2.txt";
+	string path1 = "D:/LaserImaging/dataFiles/smallSplitTest1.txt";
+	string path2 = "D:/LaserImaging/dataFiles/smallSplitTest2.txt";
 	// path1 = "./dataFiles/fullTest.txt";
 	timeBegin = clock();
 	thread t1(threadRun, path1, levels, index, totalIndex, maxdepth);
@@ -410,7 +409,7 @@ int main()
 	cout << "Thread two done." << endl;
 	
 	templateBin *tb = new templateBin(xmin, xmax, ymin, ymax, zmin, zmax, 0.01, maxdepth);
-	tb->closeStreams();
+	//tb->closeStreams();
 	tb->createAllHrc();
 	timeLast = (clock() - timeBegin)*1.0 / CLOCKS_PER_SEC;
 	cout << "*************************************" << endl;

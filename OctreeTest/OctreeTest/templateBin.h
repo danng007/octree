@@ -28,7 +28,7 @@ public:
 	~templateBin();
 	double xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0;
 	void calIndex(float x, float y, float z, unsigned char r, unsigned char g, unsigned char b, unsigned char a, vector<int> levels, vector<long long int> index, vector<long long int> totalIndex);
-	string basePath = "D:/LaserImaging/dataFiles/r/";
+	string basePath = "D:/LaserImaging/dataFiles/";
 	float scale = 1;
 	void createAllHrc();
 	ofstream *binWriter;
@@ -59,6 +59,7 @@ private:
 	float x, y, z;
 	void writeBinValue(float x, float y, float z, int r, int g, int b, int a, string& filePath, float newMinX, float newMinY, float newMinZ, int levelNow, vector<int> levels);
 	int countRows(string& filePath);
+	void calBasePath(double x, double y, double z);
 
 };
 
