@@ -33,6 +33,7 @@ templateBin::templateBin(double Xmin, double Xmax, double Ymin, double Ymax, dou
 
 templateBin::~templateBin()
 {
+	
 	delete[] arr;
 }
 
@@ -244,59 +245,147 @@ int templateBin::countRows(string& filePath) {
 	}
 	return result - 1;
 }
+void templateBin::initialStreams() {
+	rootfile = new ofstream(basePath+"r.bin", ios::out | ios::binary | ofstream::app);
+	for (int i = 0; i < 8; i++)
+	{
+		sstm.str("");
+		sstm << basePath << "r" << i << ".bin";
+		levelOneStreams[i]  = new ofstream(sstm.str(), ios::out | ios::binary | ofstream::app);
+		//levelOneStreams[i].open(sstm.str());
+	}
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++) {
+			sstm.str("");
+			sstm << basePath << "r" << i << j  << ".bin";
+			levelTwoStreams[i][j] = new ofstream(sstm.str(), ios::out | ios::binary | ofstream::app);
+			//levelTwoStreams[i][j].open(sstm.str());
+		}
+	}
+	
+}
+void templateBin::closeStreams() {
+	rootfile->close();
+	for (int i = 0; i < 8; i++)
+	{
+		levelOneStreams[i]->close();
+		removeFilePath = basePath + "r" + to_string(i) + ".bin";
+		removeFileCheck.open(removeFilePath);
+		if (is_empty(removeFileCheck))
+		{
 
+			removeFileCheck.close();
+			
+			remove(removeFilePath.c_str());
+		}
+		else
+		{
+
+			removeFileCheck.close();
+		}
+	}
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++) {
+
+			levelTwoStreams[i][j]->close();
+			removeFilePath = basePath + "r" + to_string(i) + to_string(j) + ".bin";
+			removeFileCheck.open(removeFilePath);
+			if (is_empty(removeFileCheck))
+			{
+				removeFileCheck.close();
+				remove(removeFilePath.c_str());
+			}
+			else
+			{
+
+				removeFileCheck.close();
+			}
+			
+		}
+	}
+}
+bool templateBin::is_empty(std::ifstream& pFile)
+{
+	return pFile.peek() == std::ifstream::traits_type::eof();
+}
 int templateBin::calLevelIndex(int depth, int length, int width) {
 	depth = (xmax - depth) / (xmax - xmin) * 128;
 	length = (ymax - length) / (ymax - ymin) * 128;
 	width = (zmax - width) / (zmax - zmin) * 128;
 	//If point outside of current box
-	if (depth >= 128 )
+	if (depth > 128 )
 	{
 		depth = 128;
 	}
-	if (width >= 128)
+	if (depth <0)
+	{
+		depth = 0;
+	}
+	if (width > 128)
 	{
 		width = 128;
 	}
-	if (length >= 128)
+	if (width < 0)
+	{
+		width = 0;
+	}
+	if (length > 128)
 	{
 		length = 128;
 	}
+	if (length < 0)
+	{
+		length = 0;
+	}
 	arr[depth][length][width]++;
 	//cout << depth << " " << length << " " << width <<" "<< arr[depth][length][width]<< endl;
-	if (arr[depth][length][width] < 4)
+	if (arr[depth][length][width] < 10)
 	{
 		return 1;
 	}
-	if (arr[depth][length][width] < 7)
+	if (arr[depth][length][width] < 20)
 	{
 		return 2;
 	}
-	if (arr[depth][length][width] < 10)
+	if (arr[depth][length][width] < 30)
 	{
 		return 3;
 	}
-	if (arr[depth][length][width] < 13)
+	if (arr[depth][length][width] < 40)
+	{
+		return 1;
+	}
+	if (arr[depth][length][width] < 50)
+	{
+		return 2;
+	}
+	if (arr[depth][length][width] < 70)
+	{
+		return 3;
+	}
+	if (arr[depth][length][width] < 80)
 	{
 		return 4;
 	}
-	if (arr[depth][length][width] < 16)
+	if (arr[depth][length][width] < 90)
 	{
 		return 5;
 	}
-	if (arr[depth][length][width] < 19)
+	if (arr[depth][length][width] < 100)
 	{
 		return 6;
 	}
-	if (arr[depth][length][width] < 22)
+	if (arr[depth][length][width] < 110)
 	{
 		return 7;
 	}
+	if (arr[depth][length][width] >= 110)
+	{
+		return 8;
+	}
 	
-	return maxDepth;
-
-	//return arr[depth][length][width];
-	//return 1;
 
 }
 void templateBin::calIndex(float xin, float yin, float zin, unsigned char r, unsigned char g, unsigned char b, unsigned char a, vector<int> levels, vector<long long int> index, vector<long long int> totalIndex)
@@ -394,28 +483,53 @@ void templateBin::calIndex(float xin, float yin, float zin, unsigned char r, uns
 	}
 	else
 	{
-	filePath = basePath + "r" + indexs + ".bin";
+		filePath = basePath + "r" + indexs + ".bin";
 	}
 	//cout << levelNow << " " << newMinX << " " << newMinY << " " << newMinZ << endl;;
 
-	writeBinValue(x, y, z, r, g, b, a, filePath, newMinX, newMinY, newMinZ);
+	writeBinValue(x, y, z, r, g, b, a, filePath, newMinX, newMinY, newMinZ, levelNow, levels);
+	
 
 }
-void templateBin::writeBinValue(float x, float y, float z, int r, int g, int b, int a, string& filePath, float newMinX, float newMinY, float newMinZ) {
+void templateBin::writeBinValue(float x, float y, float z, int r, int g, int b, int a, string& filePath, float newMinX, float newMinY, float newMinZ, int levelNow, vector<int> levels) {
 	x -= newMinX;
 	y -= newMinY;
 	z -= newMinZ;
-	binWriter = new ofstream(filePath, ios::out | ios::binary | ofstream::app);
-	//test code
-	/*if (y*scale + ymin > ymax)
-	{
-		int a = 1;
-	}*/
-	//cout << x << " " << y << " " << z << endl;
 	int pos[3] = { x,y,z };
-	binWriter->write((const char*)pos, 3 * sizeof(int));
 	unsigned char rgba[4] = { r,g,b,a };
-	binWriter->write((const char*)rgba, 4 * sizeof(unsigned  char));
-	binWriter->flush();
-	binWriter->close();
+	switch (levelNow)
+	{
+	case 1:
+		
+		rootfile->write((const char*)pos, 3 * sizeof(int));
+	
+		rootfile->write((const char*)rgba, 4 * sizeof(unsigned  char));
+		rootfile->flush();
+		break;
+	case 2:
+	
+		levelOneStreams[levels[1] - 1]->write((const char*)pos, 3 * sizeof(int));
+	
+		levelOneStreams[levels[1] - 1]->write((const char*)rgba, 4 * sizeof(unsigned  char));
+		levelOneStreams[levels[1] - 1]->flush();
+		break;
+	case 3:
+	
+		levelTwoStreams[levels[1] - 1][levels[2] - 1]->write((const char*)pos, 3 * sizeof(int));
+		
+		levelTwoStreams[levels[1] - 1][levels[2] - 1]->write((const char*)rgba, 4 * sizeof(unsigned  char));
+		levelTwoStreams[levels[1] - 1][levels[2] - 1]->flush();
+		break;
+	default:
+		binWriter = new ofstream(filePath, ios::out | ios::binary | ofstream::app);
+		
+		binWriter->write((const char*)pos, 3 * sizeof(int));
+		
+		binWriter->write((const char*)rgba, 4 * sizeof(unsigned  char));
+		binWriter->flush();
+		binWriter->close();
+		break;
+	}
+	
+	
 }

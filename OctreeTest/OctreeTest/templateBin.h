@@ -16,6 +16,7 @@
 #include<time.h>
 #include<utility>
 #include<tuple>
+#include <sstream>
 using namespace std;
 
 
@@ -34,23 +35,29 @@ public:
 	ofstream *rootWriter;
 	ifstream *hrcReader;
 	void createHrc(string hrcName, string folderStr, int startLevel);
-
+	void initialStreams();
+	void closeStreams();
 private:
-	
+	bool storeStream;
+	stringstream sstm;
+	ofstream* rootfile;
+	ofstream* levelOneStreams[8];
+	ofstream* levelTwoStreams[8][8];
 	char buffer[5];
 	int calLevelIndex(int depth, int length, int width);
 	//int arg[4][40] = { { 8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5 },{ 7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8 },{ 8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4 },{ 7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8 } };
 	//int* arr = new int[40 * 40 * 40];
 	typedef int SPACE2D_t[129][129];
 	SPACE2D_t* arr = new SPACE2D_t[129];
-	
-	
+	ifstream removeFileCheck;
+	string removeFilePath;
 	//template<int> Array3D arr(256);
+	bool is_empty(std::ifstream& pFile);
 	int maxDepth;
 	char returnChildHrc(string& fileFolderPath, string& filePath, int level);
 	char returnFinChildHrc(string& filePath, int level);
 	float x, y, z;
-	void writeBinValue(float x, float y, float z, int r, int g, int b, int a, string& filePath, float newMinX, float newMinY, float newMinZ);
+	void writeBinValue(float x, float y, float z, int r, int g, int b, int a, string& filePath, float newMinX, float newMinY, float newMinZ, int levelNow, vector<int> levels);
 	int countRows(string& filePath);
 
 };

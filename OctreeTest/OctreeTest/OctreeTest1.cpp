@@ -351,6 +351,7 @@ void threadRun(string dataFilePath, vector<int> levels, vector<long long int> in
 	ifstream dataFile;
 	dataFile.open(dataFilePath);
 	templateBin *tb = new templateBin(xmin, xmax, ymin, ymax, zmin, zmax, 0.01, maxdepth);
+	tb->initialStreams();
 	timeBegin = clock();
 	int counter = 0;
 
@@ -362,14 +363,9 @@ void threadRun(string dataFilePath, vector<int> levels, vector<long long int> in
 	
 		if (!(iss >> x >> y >> z >> r >> g >> b >> a)) { break; } // error
 		a = a * 100;
-		if (x < 8.75 && x > 8.73 && z > 140.44 && z < 140.46)
-		{
-			int testt;
-			testt= 0;
-		}
 		tb->calIndex(x, y, z, r, g, b, a, levels, index, totalIndex);
 	}
-
+	//tb->closeStreams();
 	tb->~templateBin();
 	
 
@@ -401,15 +397,20 @@ int main()
 	initialIndex(index2, levels2, totalIndex2, maxdepth);
 
 
-	string path1 = "D:/LaserImaging/dataFiles/smallSplitTest1.txt";
-	string path2 = "D:/LaserImaging/dataFiles/smallSplitTest2.txt";
+	string path1 = "D:/LaserImaging/dataFiles/largeSplitTest1.txt";
+	string path2 = "D:/LaserImaging/dataFiles/largeSplitTest2.txt";
 	// path1 = "./dataFiles/fullTest.txt";
 	timeBegin = clock();
 	thread t1(threadRun, path1, levels, index, totalIndex, maxdepth);
 	thread t2(threadRun, path2, levels2, index2, totalIndex2, maxdepth);
+	
 	t1.join();
+	cout << "Thread one done." << endl;
 	t2.join();
+	cout << "Thread two done." << endl;
+	
 	templateBin *tb = new templateBin(xmin, xmax, ymin, ymax, zmin, zmax, 0.01, maxdepth);
+	tb->closeStreams();
 	tb->createAllHrc();
 	timeLast = (clock() - timeBegin)*1.0 / CLOCKS_PER_SEC;
 	cout << "*************************************" << endl;
