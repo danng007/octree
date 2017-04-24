@@ -20,15 +20,17 @@ templateBin::templateBin(double Xmin, double Xmax, double Ymin, double Ymax, dou
 	zmin /= scale;
 	ymax /= scale;
 	zmax /= scale;
-	for (int i = 0; i < 128; i++)
+	for (int i = 0; i <= 128; i++)
 	{
-		for (int j = 0; j < 128; j++) {
-			for (int m = 0; m < 128; m++)
+		for (int j = 0; j <= 128; j++) {
+			for (int m = 0; m <= 128; m++)
 			{
 				arr[i][j][m] = 0;
 			}
 		}
 	}
+	//boost::filesystem::create_directories("D:/Test/LaserImaging/dataFiles/r/");
+	//_mkdir("D:/Test/LaserImaging");
 }
 
 templateBin::~templateBin()
@@ -232,17 +234,24 @@ char templateBin::returnFinChildHrc(string& filePath, int level) {
 	return resultV;
 }
 
-void templateBin::calBasePath(double x, double y, double z) {
+string templateBin::calBasePath(double x, double y, double z, int* basePosition) {
 	//Center point is the center of center box: (0,0,0). Length of cube is 200. 
 	//So center box is: (-100,100)
-	//int / will remove fractional part auto
-	int basePosition[3] = { 0 };
+	//int / will remove fractional part auto 
+	//int basePosition[3] = { 0 };
 	basePosition[0] = x / 100;
 	basePosition[1] = y / 100;
 	basePosition[2] = z / 100;
 	string newBasePath;
-	newBasePath = "P_" + to_string(basePosition[0]) + "_" + to_string(basePosition[1]) + "_" + to_string(basePosition[2])+"/data/r/";
-	
+	newBasePath = folderBase +"P_" + to_string(basePosition[0]) + "_" + to_string(basePosition[1]) + "_" + to_string(basePosition[2]);
+	_mkdir(newBasePath.c_str());
+	newBasePath = newBasePath + "/data";
+	_mkdir(newBasePath.c_str());
+	newBasePath = newBasePath + "/r";
+	_mkdir(newBasePath.c_str());
+	newBasePath = newBasePath + "/";
+	//return make_tuple(newBasePath,basePosition);
+   return newBasePath;
 }
 
 int templateBin::countRows(string& filePath) {
@@ -283,7 +292,7 @@ void templateBin::closeStreams() {
 	for (int i = 0; i < 8; i++)
 	{
 		levelOneStreams[i]->close();
-		removeFilePath = basePath + "r" + to_string(i) + ".bin";
+		removeFilePath = folderBase + "r" + to_string(i) + ".bin";
 		removeFileCheck.open(removeFilePath);
 		if (is_empty(removeFileCheck))
 		{
@@ -303,7 +312,7 @@ void templateBin::closeStreams() {
 		for (int j = 0; j < 8; j++) {
 
 			levelTwoStreams[i][j]->close();
-			removeFilePath = basePath + "r" + to_string(i) + to_string(j) + ".bin";
+			removeFilePath = folderBase + "r" + to_string(i) + to_string(j) + ".bin";
 			removeFileCheck.open(removeFilePath);
 			if (is_empty(removeFileCheck))
 			{
@@ -354,6 +363,10 @@ int templateBin::calLevelIndex(int depth, int length, int width) {
 	}
 	arr[depth][length][width]++;
 	//cout << depth << " " << length << " " << width <<" "<< arr[depth][length][width]<< endl;
+	if (arr[depth][length][width] < 4)
+	{
+		return arr[depth][length][width];
+	}
 	if (arr[depth][length][width] < 10)
 	{
 		return 1;
@@ -399,7 +412,7 @@ int templateBin::calLevelIndex(int depth, int length, int width) {
 		return 8;
 	}
 	
-
+	
 }
 void templateBin::calIndex(float xin, float yin, float zin, unsigned char r, unsigned char g, unsigned char b, unsigned char a, vector<int> levels, vector<long long int> index, vector<long long int> totalIndex)
 {
@@ -416,22 +429,29 @@ void templateBin::calIndex(float xin, float yin, float zin, unsigned char r, uns
 	{
 		yin = -yin;
 	}*/
+	int newPosition[3] = { 0 };
+	basePath = calBasePath(xin, yin, zin, newPosition);
 	string filePath = "";
 	x = xin / scale;
 	y = yin / scale;
 	z = zin / scale;
 
-	int levelNow = calLevelIndex((int)x, (int)y, (int)z);
-
-	float midX = (xmax - xmin) / 2 + xmin;
-	float midY = (ymax - ymin) / 2 + ymin;
-	float midZ = (zmax - zmin) / 2 + zmin;
+	int levelNow = calLevelIndex((int)x - *(newPosition+0)*100, (int)y - *(newPosition + 1) *100, (int)z- *(newPosition + 2) *100);
+	float xmaxNew = xmax + *(newPosition + 0) * 100;
+	float xminNew = xmax + *(newPosition + 0) * 100;
+	float ymaxNew = ymax + *(newPosition + 1) * 100;
+	float yminNew = ymax + *(newPosition + 1) * 100;
+	float zmaxNew = zmax + *(newPosition + 2) * 100;
+	float zminNew = zmax + *(newPosition + 2) * 100;
+	float midX = (xmaxNew - xminNew) / 2 + xminNew;
+	float midY = (ymaxNew - yminNew) / 2 + yminNew;
+	float midZ = (zmaxNew - zminNew) / 2 + zminNew;
 
 	string indexs = "";
 	string folderIndex = "";
 	string dest = basePath;
 	stringstream ss;
-	float newMinX = xmin, newMinY = ymin, newMinZ = zmin, halfEdge = (xmax - xmin), newMaxX = xmax, newMaxY = ymax, newMaxZ = zmax;
+	float newMinX = xminNew, newMinY = yminNew, newMinZ = zminNew, halfEdge = (xmaxNew - xminNew), newMaxX = xmaxNew, newMaxY = ymaxNew, newMaxZ = zmaxNew;
 
 	for (int i = 1; i < levelNow; i++) {
 
@@ -510,7 +530,14 @@ void templateBin::writeBinValue(float x, float y, float z, int r, int g, int b, 
 	z -= newMinZ;
 	int pos[3] = { x,y,z };
 	unsigned char rgba[4] = { r,g,b,a };
-	switch (levelNow)
+	binWriter = new ofstream(filePath, ios::out | ios::binary | ofstream::app);
+
+	binWriter->write((const char*)pos, 3 * sizeof(int));
+
+	binWriter->write((const char*)rgba, 4 * sizeof(unsigned  char));
+	binWriter->flush();
+	binWriter->close();
+	/*switch (levelNow)
 	{
 	case 1:
 		
@@ -539,7 +566,7 @@ void templateBin::writeBinValue(float x, float y, float z, int r, int g, int b, 
 		binWriter->flush();
 		binWriter->close();
 		break;
-	}
+	}*/
 	
 	
 }

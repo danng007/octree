@@ -1,19 +1,28 @@
 ﻿  templateBin.cpp
-d:\system_code\octreetest\octreetest\templatebin.cpp(41): warning C4101: “rowCounter”: 未引用的局部变量
-d:\system_code\octreetest\octreetest\templatebin.cpp(40): warning C4101: “childV”: 未引用的局部变量
-d:\system_code\octreetest\octreetest\templatebin.cpp(117): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
-d:\system_code\octreetest\octreetest\templatebin.cpp(157): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
-d:\system_code\octreetest\octreetest\templatebin.cpp(173): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
-d:\system_code\octreetest\octreetest\templatebin.cpp(210): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
-d:\system_code\octreetest\octreetest\templatebin.cpp(249): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
-d:\system_code\octreetest\octreetest\templatebin.cpp(250): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
-d:\system_code\octreetest\octreetest\templatebin.cpp(251): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
-d:\system_code\octreetest\octreetest\templatebin.cpp(300): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-d:\system_code\octreetest\octreetest\templatebin.cpp(301): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-d:\system_code\octreetest\octreetest\templatebin.cpp(302): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-d:\system_code\octreetest\octreetest\templatebin.cpp(308): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-d:\system_code\octreetest\octreetest\templatebin.cpp(390): warning C4838: 从“float”转换到“int”需要收缩转换
-d:\system_code\octreetest\octreetest\templatebin.cpp(390): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
-d:\system_code\octreetest\octreetest\templatebin.cpp(392): warning C4838: 从“int”转换到“unsigned char”需要收缩转换
-  OctreeTest.vcxproj -> D:\System_Code\OctreeTest\x64\Debug\OctreeTest.exe
-  OctreeTest.vcxproj -> D:\System_Code\OctreeTest\x64\Debug\OctreeTest.pdb (Partial PDB)
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(44): warning C4101: 'rowCounter': unreferenced local variable
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(43): warning C4101: 'childV': unreferenced local variable
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(120): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(160): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(176): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(213): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(242): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(243): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(244): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(336): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(337): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(338): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(440): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(441): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(442): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(443): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(444): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(445): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(531): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(531): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(532): warning C4838: conversion from 'int' to 'unsigned char' requires a narrowing conversion
+  Generating Code...
+d:\gitlaserimaging\octree\octreetest\octreetest\templatebin.cpp(416): warning C4715: 'templateBin::calLevelIndex': not all control paths return a value
+  Skipping... (no relevant changes detected)
+  OctreeTest1.cpp
+  OctreeTest.vcxproj -> D:\GitLaserImaging\octree\OctreeTest\x64\Debug\OctreeTest.exe
+  OctreeTest.vcxproj -> D:\GitLaserImaging\octree\OctreeTest\x64\Debug\OctreeTest.pdb (Partial PDB)

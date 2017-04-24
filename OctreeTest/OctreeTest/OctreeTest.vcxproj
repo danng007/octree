@@ -69,8 +69,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\roslz4\include;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\console_bridge-master\include;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\roscpp_core-kinetic-devel\roscpp_serialization\include;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\roscpp_core-kinetic-devel\roscpp_traits\include;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\roscpp_core-kinetic-devel\rostime\include;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\roscpp_core-kinetic-devel\cpp_common\include;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\std_msgs-groovy-devel\include;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\rosbag_storage\include;D:\LaserImagingBitPro\boost_1_63_0;$(IncludePath)</IncludePath>
+    <IncludePath>D:\GitLaserImaging\boost_1_63_0;$(IncludePath)</IncludePath>
     <SourcePath>D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\roslz4\src;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\console_bridge-master\src;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\roscpp_core-kinetic-devel\cpp_common\src;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\roscpp_core-kinetic-devel\roscpp_serialization\src;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\roscpp_core-kinetic-devel\rostime\src;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\std_msgs-groovy-devel\include\rosserial_msgs;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\std_msgs-groovy-devel\include\std_msgs;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\rosbag_storage\src;$(SourcePath)</SourcePath>
+    <LibraryPath>D:\GitLaserImaging\boost_1_63_0\stage\lib;D:\GitLaserImaging\boost_1_63_0\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -85,6 +86,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>D:\GitLaserImaging\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

@@ -1,4 +1,6 @@
 #pragma once
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#define BOOST_FILESYSTEM_NO_LIB
 #include <iostream>
 #include <stdio.h>
 #include<math.h>
@@ -29,6 +31,7 @@ public:
 	double xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0;
 	void calIndex(float x, float y, float z, unsigned char r, unsigned char g, unsigned char b, unsigned char a, vector<int> levels, vector<long long int> index, vector<long long int> totalIndex);
 	string basePath = "D:/LaserImaging/dataFiles/";
+	string folderBase = "D:/LaserImaging/dataFiles/";
 	float scale = 1;
 	void createAllHrc();
 	ofstream *binWriter;
@@ -45,8 +48,6 @@ private:
 	ofstream* levelTwoStreams[8][8];
 	char buffer[5];
 	int calLevelIndex(int depth, int length, int width);
-	//int arg[4][40] = { { 8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5 },{ 7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8 },{ 8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4 },{ 7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8,7,8,5,8,7,8,6,8,7,8,4,8,7,8,6,8 } };
-	//int* arr = new int[40 * 40 * 40];
 	typedef int SPACE2D_t[129][129];
 	SPACE2D_t* arr = new SPACE2D_t[129];
 	ifstream removeFileCheck;
@@ -59,7 +60,7 @@ private:
 	float x, y, z;
 	void writeBinValue(float x, float y, float z, int r, int g, int b, int a, string& filePath, float newMinX, float newMinY, float newMinZ, int levelNow, vector<int> levels);
 	int countRows(string& filePath);
-	void calBasePath(double x, double y, double z);
+	string calBasePath(double x, double y, double z,int* basePosition);
 
 };
 

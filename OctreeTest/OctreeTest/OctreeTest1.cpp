@@ -391,25 +391,30 @@ int main()
 	vector<long long>index2(maxdepth, 1);
 	vector<long long>totalIndex2(maxdepth, 1);
 	vector<int>levels2(maxdepth, 1);
-	cout << "Input Range of Size\nInput Order:xmin,xmax,ymin,ymax,zmin,zmax" << endl;
-	cin >> xmin >> xmax >> ymin >> ymax >> zmin >> zmax;
+	cout << "Input Range of Size\nInput Order:xmin,xmax,ymin,ymax,zmin,zmax\n Already Inputed: min= -100, max = 100" << endl;
+	//cin >> xmin >> xmax >> ymin >> ymax >> zmin >> zmax;
+	xmin = -100;
+	ymin = -100;
+	zmin = -100;
+	xmax = 100;
+	ymax = 100;
+	zmax = 100;
 	initialIndex(index, levels, totalIndex, maxdepth);
 	initialIndex(index2, levels2, totalIndex2, maxdepth);
 
-	string path1 = "D:/LaserImaging/dataFiles/smallSplitTest1.txt";
-	string path2 = "D:/LaserImaging/dataFiles/smallSplitTest2.txt";
+	string path1 = "D:/LaserImaging/dataFiles/thretest1.txt";
+	string path2 = "D:/LaserImaging/dataFiles/thretest2.txt";
 	// path1 = "./dataFiles/fullTest.txt";
 	timeBegin = clock();
 	thread t1(threadRun, path1, levels, index, totalIndex, maxdepth);
 	thread t2(threadRun, path2, levels2, index2, totalIndex2, maxdepth);
-	
 	t1.join();
 	cout << "Thread one done." << endl;
 	t2.join();
 	cout << "Thread two done." << endl;
-	
+
 	templateBin *tb = new templateBin(xmin, xmax, ymin, ymax, zmin, zmax, 0.01, maxdepth);
-	//tb->closeStreams();
+
 	tb->createAllHrc();
 	timeLast = (clock() - timeBegin)*1.0 / CLOCKS_PER_SEC;
 	cout << "*************************************" << endl;
