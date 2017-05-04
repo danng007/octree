@@ -10,6 +10,7 @@
 #include "writeBin.h"
 #include "templateBin.h"
 #include <thread>
+#include"multiFiles.h"
 using namespace std;
 //Define Octree Class
 template<class T>
@@ -347,11 +348,14 @@ void threadRun(string dataFilePath, vector<int> levels, vector<long long int> in
 	double timeLast;
 	double timeBegin;
 	string line;
+	string filePathForThread;
 	float x, y, z, value, a;
 	int r, g, b;
 	ifstream dataFile;
-	dataFile.open(dataFilePath);
+	filePathForThread = "D:/LaserImaging/dataFiles/test/" + dataFilePath;
+	dataFile.open(filePathForThread);
 	templateBin *tb = new templateBin(xmin, xmax, ymin, ymax, zmin, zmax, 0.01, maxdepth);
+	tb->setBase(dataFilePath);
 	tb->initialStreams();
 	timeBegin = clock();
 	int counter = 0;
@@ -367,7 +371,8 @@ void threadRun(string dataFilePath, vector<int> levels, vector<long long int> in
 		tb->calIndex(x, y, z, r, g, b, a, levels, index, totalIndex);
 	}
 	tb->closeStreams();
-	tb->~templateBin();
+	tb->createAllHrc();
+	//tb->~templateBin();
 	
 	timeLast = (clock() - timeBegin)*1.0 / CLOCKS_PER_SEC;
 	cout << "*************************************" << endl;
@@ -375,15 +380,49 @@ void threadRun(string dataFilePath, vector<int> levels, vector<long long int> in
 	cout << "Processing Points: " << counter << endl;
 	cout << "*************************************" << endl;
 }
+void runThread(vector<int> levels, vector<long long int> index, vector<long long int> totalIndex, int maxdepth) {
+	char resultV = 0;
+	string files;
+	string childFile = "";
+	int fileLength;
+	string subFile;
+	DIR *dir;
+	struct dirent *ent;
+	int indexV;
+	subFile = "D:/LaserImaging/dataFiles/test/";
+	dir = opendir(subFile.c_str());
+	if (dir != NULL) {
+		while ((ent = readdir(dir)) != NULL) {
+			switch (ent->d_type) {
+			case DT_REG:
+				files = ent->d_name;
+				fileLength = files.length();
+				if (fileLength > 6)
+				{
+					threadRun(files, levels, index, totalIndex, maxdepth);
+				}
+				break;
+			case DT_DIR:
+				break;
+			default:
+				printf("%s:\n", ent->d_name);
+			}
+		}
+	}
+	closedir(dir);
+}
 int main()
 {
+	string path1 = "D:/LaserImaging/dataFiles/railExportSmall.txt";
+	//string path2 = "D:/LaserImaging/dataFiles/thretest2.txt";
+
 	double timeLast;
 	double timeBegin;
 	//readBin();
 	int maxdepth = 0;
 	int indexCounter = 0;
-	cout << "Input Max Depth:" << endl;
-	cin >> maxdepth;
+	cout << "Max Depth = 8" << endl;
+	maxdepth = 8;
 	vector<long long>index(maxdepth, 1);
 	vector<long long>totalIndex(maxdepth, 1);
 	vector<int>levels(maxdepth, 1);
@@ -399,14 +438,19 @@ int main()
 	xmax = 100;
 	ymax = 100;
 	zmax = 100;
+	cout << "Enter any value to start" << endl;
+	int testt;
+	cin >> testt;
+	multiFiles *mf = new multiFiles();
+	mf->initialBackRootFiles();
+	mf->splitToFolders(path1);
+	mf->deleteEmptyFiles();
 	initialIndex(index, levels, totalIndex, maxdepth);
 	initialIndex(index2, levels2, totalIndex2, maxdepth);
-
-	string path1 = "D:/LaserImaging/dataFiles/thretest1.txt";
-	string path2 = "D:/LaserImaging/dataFiles/thretest2.txt";
 	// path1 = "./dataFiles/fullTest.txt";
 	timeBegin = clock();
-	thread t1(threadRun, path1, levels, index, totalIndex, maxdepth);
+	runThread( levels, index, totalIndex, maxdepth);
+	/*thread t1(threadRun, path1, levels, index, totalIndex, maxdepth);
 	thread t2(threadRun, path2, levels2, index2, totalIndex2, maxdepth);
 	t1.join();
 	cout << "Thread one done." << endl;
@@ -415,13 +459,13 @@ int main()
 
 	templateBin *tb = new templateBin(xmin, xmax, ymin, ymax, zmin, zmax, 0.01, maxdepth);
 
-	tb->createAllHrc();
+	tb->createAllHrc();*/
 	timeLast = (clock() - timeBegin)*1.0 / CLOCKS_PER_SEC;
 	cout << "*************************************" << endl;
 	cout << "In Total Finish Processing Time: " << timeLast << " s" << endl;
 	cout << "*************************************" << endl;
-	int endx;
-	cin >> endx;
+
+	cin >> testt;
 
 
 
@@ -443,7 +487,6 @@ int main()
 	//		system("cls");
 	//		cout << "Input Max Depth:" << endl;
 	//		cin >> maxdepth;
-
 	//		cout << "Input Range of Size. Input Order:xmin,xmax,ymin,ymax,zmin,zmax" << endl;
 	//		cin >> xmin >> xmax >> ymin >> ymax >> zmin >> zmax;
 	//		if (maxdepth >= 0 || xmax>xmin || ymax>ymin || zmax>zmin || xmin>0 || ymin>0 || zmin>0)
@@ -494,7 +537,6 @@ int main()
 	//		cin >> x >> y >> z;
 	//		times = 0;
 	//		calIndex(x, y, z, levels, index, totalIndex, maxdepth, outputFile);
-
 	//		system("pause");
 	//	}
 	//	else

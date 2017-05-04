@@ -233,26 +233,23 @@ char templateBin::returnFinChildHrc(string& filePath, int level) {
 	closedir(dir);
 	return resultV;
 }
-
-string templateBin::calBasePath(double x, double y, double z, int* basePosition) {
-	//Center point is the center of center box: (0,0,0). Length of cube is 200. 
-	//So center box is: (-100,100)
-	//int / will remove fractional part auto 
-	//int basePosition[3] = { 0 };
-	basePosition[0] = x / 100;
-	basePosition[1] = y / 100;
-	basePosition[2] = z / 100;
+void templateBin::setBase(string newFileBasePath) {
+	newPosition[0] = newFileBasePath[1]-48;
+	newPosition[1] = newFileBasePath[3]-48;
+	newPosition[2] = newFileBasePath[5]-48;
+	cout << newPosition[0] << "!" << endl;
 	string newBasePath;
-	newBasePath = folderBase +"P_" + to_string(basePosition[0]) + "_" + to_string(basePosition[1]) + "_" + to_string(basePosition[2]);
+	newBasePath = folderBase + "/P" +newFileBasePath.substr(0,newFileBasePath.length()-4);
 	_mkdir(newBasePath.c_str());
 	newBasePath = newBasePath + "/data";
 	_mkdir(newBasePath.c_str());
 	newBasePath = newBasePath + "/r";
 	_mkdir(newBasePath.c_str());
 	newBasePath = newBasePath + "/";
-	//return make_tuple(newBasePath,basePosition);
-   return newBasePath;
+	basePath = newBasePath;
+	
 }
+
 
 int templateBin::countRows(string& filePath) {
 	int result = 0;
@@ -292,27 +289,25 @@ void templateBin::closeStreams() {
 	for (int i = 0; i < 8; i++)
 	{
 		levelOneStreams[i]->close();
-		removeFilePath = folderBase + "r" + to_string(i) + ".bin";
+		removeFilePath = basePath + "r" + to_string(i) + ".bin";
 		removeFileCheck.open(removeFilePath);
 		if (is_empty(removeFileCheck))
 		{
-
 			removeFileCheck.close();
-			
 			remove(removeFilePath.c_str());
 		}
 		else
 		{
-
 			removeFileCheck.close();
 		}
+		
 	}
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++) {
 
 			levelTwoStreams[i][j]->close();
-			removeFilePath = folderBase + "r" + to_string(i) + to_string(j) + ".bin";
+			removeFilePath = basePath + "r" + to_string(i) + to_string(j) + ".bin";
 			removeFileCheck.open(removeFilePath);
 			if (is_empty(removeFileCheck))
 			{
@@ -321,10 +316,9 @@ void templateBin::closeStreams() {
 			}
 			else
 			{
-
 				removeFileCheck.close();
 			}
-			
+
 		}
 	}
 }
@@ -429,8 +423,6 @@ void templateBin::calIndex(float xin, float yin, float zin, unsigned char r, uns
 	{
 		yin = -yin;
 	}*/
-	int newPosition[3] = { 0 };
-	basePath = calBasePath(xin, yin, zin, newPosition);
 	string filePath = "";
 	x = xin / scale;
 	y = yin / scale;
@@ -438,11 +430,11 @@ void templateBin::calIndex(float xin, float yin, float zin, unsigned char r, uns
 
 	int levelNow = calLevelIndex((int)x - *(newPosition+0)*100, (int)y - *(newPosition + 1) *100, (int)z- *(newPosition + 2) *100);
 	float xmaxNew = xmax + *(newPosition + 0) * 100;
-	float xminNew = xmax + *(newPosition + 0) * 100;
+	float xminNew = xmin + *(newPosition + 0) * 100;
 	float ymaxNew = ymax + *(newPosition + 1) * 100;
-	float yminNew = ymax + *(newPosition + 1) * 100;
+	float yminNew = ymin + *(newPosition + 1) * 100;
 	float zmaxNew = zmax + *(newPosition + 2) * 100;
-	float zminNew = zmax + *(newPosition + 2) * 100;
+	float zminNew = zmin + *(newPosition + 2) * 100;
 	float midX = (xmaxNew - xminNew) / 2 + xminNew;
 	float midY = (ymaxNew - yminNew) / 2 + yminNew;
 	float midZ = (zmaxNew - zminNew) / 2 + zminNew;
@@ -530,14 +522,8 @@ void templateBin::writeBinValue(float x, float y, float z, int r, int g, int b, 
 	z -= newMinZ;
 	int pos[3] = { x,y,z };
 	unsigned char rgba[4] = { r,g,b,a };
-	binWriter = new ofstream(filePath, ios::out | ios::binary | ofstream::app);
-
-	binWriter->write((const char*)pos, 3 * sizeof(int));
-
-	binWriter->write((const char*)rgba, 4 * sizeof(unsigned  char));
-	binWriter->flush();
-	binWriter->close();
-	/*switch (levelNow)
+	
+	switch (levelNow)
 	{
 	case 1:
 		
@@ -566,7 +552,7 @@ void templateBin::writeBinValue(float x, float y, float z, int r, int g, int b, 
 		binWriter->flush();
 		binWriter->close();
 		break;
-	}*/
+	}
 	
 	
 }
