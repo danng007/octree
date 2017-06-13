@@ -28,10 +28,9 @@ public:
 	~templateBin();
 	double xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0;
 	void calIndex(float x, float y, float z, unsigned char r, unsigned char g, unsigned char b, unsigned char a, vector<int> levels, vector<long long int> index, vector<long long int> totalIndex);
-	string basePath = "D:/LaserImaging/dataFiles/";
-	string folderBase = "D:/LaserImaging/dataFiles/mfResult";
-	float scale = 1;
-	void createAllHrc();
+	string basePath = "D:/LaserImaging/dataFiles/mfTest/result";
+	string folderBase = "D:/LaserImaging/dataFiles/mfTest/result";
+	float scale = 1;	void createAllHrc();
 	ofstream *binWriter;
 	ofstream *rootWriter;
 	ifstream *hrcReader;
@@ -46,6 +45,7 @@ private:
 	ofstream* rootfile;
 	ofstream* levelOneStreams[8];
 	ofstream* levelTwoStreams[8][8];
+	ofstream* levelThreeStreams[8][8][8];
 	char buffer[5];
 	int calLevelIndex(int depth, int length, int width);
 	typedef int SPACE2D_t[129][129];

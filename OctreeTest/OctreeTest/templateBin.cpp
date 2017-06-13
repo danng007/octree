@@ -79,6 +79,7 @@ void templateBin::createAllHrc() {
 					rootWriter->write(buffer, 5);
 					rootWriter->flush();
 				}
+				hrcReader->close();
 				break;
 			default:
 				printf("%s:\n", ent->d_name);
@@ -86,7 +87,6 @@ void templateBin::createAllHrc() {
 		}
 	}
 	closedir(dir);
-
 }
 
 void templateBin::createHrc(string hrcName, string folderStr, int splitLevel) {
@@ -237,7 +237,7 @@ void templateBin::setBase(string newFileBasePath) {
 	newPosition[0] = newFileBasePath[1]-48;
 	newPosition[1] = newFileBasePath[3]-48;
 	newPosition[2] = newFileBasePath[5]-48;
-	cout << newPosition[0] << "!" << endl;
+	//cout << newPosition[0] << "!" << endl;
 	string newBasePath;
 	newBasePath = folderBase + "/P" +newFileBasePath.substr(0,newFileBasePath.length()-4);
 	_mkdir(newBasePath.c_str());
@@ -262,6 +262,7 @@ int templateBin::countRows(string& filePath) {
 		binReader->read(buffer, 16); //1 size byte for 2 number
 		result++;
 	}
+	binReader->close();
 	return result - 1;
 }
 void templateBin::initialStreams() {
@@ -281,6 +282,17 @@ void templateBin::initialStreams() {
 			levelTwoStreams[i][j] = new ofstream(sstm.str(), ios::out | ios::binary | ofstream::app);
 			//levelTwoStreams[i][j].open(sstm.str());
 		}
+	}
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++){
+			for (int l = 0; l < 8; l++){
+					sstm.str("");
+					sstm << basePath << "r" << i << j <<l<< ".bin";
+					levelThreeStreams[i][j][l] = new ofstream(sstm.str(), ios::out | ios::binary | ofstream::app);
+					//levelTwoStreams[i][j].open(sstm.str());
+				}
+			}
 	}
 	
 }
@@ -319,6 +331,27 @@ void templateBin::closeStreams() {
 				removeFileCheck.close();
 			}
 
+		}
+	}
+
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++) {
+			for (int l = 0; l < 8; l++)
+			{
+				levelThreeStreams[i][j][l]->close();
+				removeFilePath = basePath + "r" + to_string(i) + to_string(j) + to_string(l) + ".bin";
+				removeFileCheck.open(removeFilePath);
+				if (is_empty(removeFileCheck))
+				{
+					removeFileCheck.close();
+					remove(removeFilePath.c_str());
+				}
+				else
+				{
+					removeFileCheck.close();
+				}
+			}
 		}
 	}
 }
@@ -542,6 +575,11 @@ void templateBin::writeBinValue(float x, float y, float z, int r, int g, int b, 
 		levelTwoStreams[levels[1] - 1][levels[2] - 1]->write((const char*)pos, 3 * sizeof(int));
 		levelTwoStreams[levels[1] - 1][levels[2] - 1]->write((const char*)rgba, 4 * sizeof(unsigned  char));
 		levelTwoStreams[levels[1] - 1][levels[2] - 1]->flush();
+		break;
+	case 4:
+		levelThreeStreams[levels[1] - 1][levels[2] - 1][levels[3] - 1]->write((const char*)pos, 3 * sizeof(int));
+		levelThreeStreams[levels[1] - 1][levels[2] - 1][levels[3] - 1]->write((const char*)rgba, 4 * sizeof(unsigned  char));
+		levelThreeStreams[levels[1] - 1][levels[2] - 1][levels[3] - 1]->flush();
 		break;
 	default:
 		binWriter = new ofstream(filePath, ios::out | ios::binary | ofstream::app);

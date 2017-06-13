@@ -69,25 +69,48 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\GitLaserImaging\boost_1_63_0;$(IncludePath)</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\roslz4\src;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\console_bridge-master\src;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\roscpp_core-kinetic-devel\cpp_common\src;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\roscpp_core-kinetic-devel\roscpp_serialization\src;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\roscpp_core-kinetic-devel\rostime\src;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\std_msgs-groovy-devel\include\rosserial_msgs;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\std_msgs-groovy-devel\include\std_msgs;D:\LaserImagingBitPro\OctreeTest\OctreeTest\rosbag\rosbag_storage\src;$(SourcePath)</SourcePath>
-    <LibraryPath>D:\GitLaserImaging\boost_1_63_0\stage\lib;D:\GitLaserImaging\boost_1_63_0\libs;$(LibraryPath)</LibraryPath>
+    <GenerateManifest>false</GenerateManifest>
+    <LibraryPath>C:\Program Files %28x86%29\Intel\OpenCL SDK\6.3\lib\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>C:\Program Files %28x86%29\Intel\OpenCL SDK\6.3\lib\x86;$(LibraryPath)</LibraryPath>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Intel\OpenCL SDK\6.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Intel\OpenCL SDK\6.3\bin\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Link>
+      <AdditionalDependencies>OpenCL.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Link>
+      <SubSystem>NotSet</SubSystem>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Intel\OpenCL SDK\6.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>D:\GitLaserImaging\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Intel\OpenCL SDK\6.3\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <Link>
+      <AdditionalDependencies>OpenCL.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>NotSet</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -117,6 +140,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="fileIO.cpp" />
+    <ClCompile Include="fileWatch.cpp" />
+    <ClCompile Include="GPUProcess.cpp" />
+    <ClCompile Include="Manager.cpp" />
+    <ClCompile Include="multiFiles.cpp" />
     <ClCompile Include="OctreeTest1.cpp" />
     <ClCompile Include="PConvert.cpp" />
     <ClCompile Include="pointReader.cpp" />
@@ -127,6 +155,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dirent.h" />
+    <ClInclude Include="fileIO.h" />
+    <ClInclude Include="fileWatch.h" />
+    <ClInclude Include="GPUProcess.h" />
+    <ClInclude Include="Manager.h" />
+    <ClInclude Include="multiFiles.h" />
     <ClInclude Include="PConvert.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="pointReader.h" />
@@ -135,6 +168,9 @@
     <ClInclude Include="templateBin.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="writeBin.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="processValueKernel.cl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

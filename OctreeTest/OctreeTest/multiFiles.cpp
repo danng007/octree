@@ -11,13 +11,13 @@ multiFiles::~multiFiles()
 {
 }
 void multiFiles::initialBackRootFiles() {
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < streamRange; i++)
 	{
-		for (int j = 0; j < 7; j++) {
-			for (int l = 0; l < 7; l++)
+		for (int j = 0; j < streamRange; j++) {
+			for (int l = 0; l < streamRange; l++)
 			{
 				sstm.str("");
-				sstm << folderBase  <<"_"<< i-3 <<"_"<< j-3 << "_"<< l-3 <<".txt";
+				sstm << folderBase  <<"_"<< i- halfRange <<"_"<< j- halfRange << "_"<< l- halfRange <<".txt";
 				backRootStreams[i][j][l] = new ofstream(sstm.str(), ios::out|ofstream::app);
 			}
 		}
@@ -31,16 +31,28 @@ void multiFiles::splitToFolders(string filePath) {
 	int r, g, b;
 	int counter = 0;
 	int basePosition[3] = { 0 };
+	if (dataFile.is_open())
+	{
+		cout << filePath << " Open Successful" << endl;
+	}
+	else {
+		cerr << "Error: " << strerror(errno);
+	}
 	while (getline(dataFile, line))
 	{
 		counter++;
 		istringstream iss(line);
-		if (!(iss >> x >> y >> z >> r >> g >> b >> a)) { break; } // error
+		if (!(iss >> x >> y >> z >> r >> g >> b >> a)) 
+		{ 
+			cout << line << endl;
+			cout << "File input error.\n";
+			break; 
+		} // error
 
 		basePosition[0] = x / 100 ;
 		basePosition[1] = y / 100 ;
 		basePosition[2] = z / 100 ;
-		if (basePosition[0] <-3 || basePosition[0] > 3 || basePosition[1] <-3 || basePosition[1] > 3 || basePosition[2] <-3 || basePosition[2] > 3 )
+		if (basePosition[0] <-halfRange || basePosition[0] > halfRange || basePosition[1] <-halfRange || basePosition[1] > halfRange || basePosition[2] <-halfRange || basePosition[2] > halfRange)
 		{
 			sstm.str("");
 			sstm << folderBase << "_" << basePosition[0]<< "_" << basePosition[1] << "_" << basePosition[2]<< ".txt";
@@ -49,21 +61,21 @@ void multiFiles::splitToFolders(string filePath) {
 			currentWriteFile.close();
 		}
 		else {
-			*backRootStreams[basePosition[0] + 3][basePosition[1] + 3][basePosition[2] + 3] << line+"\n";
+			*backRootStreams[basePosition[0] + halfRange][basePosition[1] + halfRange][basePosition[2] + halfRange] << line+"\n";
 		}
-		
 	}
+	dataFile.close();
 }
 void multiFiles::deleteEmptyFiles() {
 	string removeFilePath;
 	ifstream removeFileCheck;
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < streamRange; i++)
 	{
-		for (int j = 0; j < 7; j++) {
-			for (int l = 0; l < 7; l++)
+		for (int j = 0; j < streamRange; j++) {
+			for (int l = 0; l < streamRange; l++)
 			{
 				backRootStreams[i][j][l]->close();
-				removeFilePath = folderBase + "_" + to_string(i-3) + "_" + to_string(j-3) + "_" + to_string(l-3) + ".txt";
+				removeFilePath = folderBase + "_" + to_string(i- halfRange) + "_" + to_string(j- halfRange) + "_" + to_string(l- halfRange) + ".txt";
 				removeFileCheck.open(removeFilePath);
 				if (is_empty(removeFileCheck))
 				{
@@ -72,16 +84,28 @@ void multiFiles::deleteEmptyFiles() {
 				}
 				else
 				{
-					cout << removeFilePath << endl;
+					//cout << removeFilePath << endl;
 					removeFileCheck.close();
 				}
-				
-				
 			}
 		}
 	}
 }
+void multiFiles::deleteAllFiles() {
+	string removeFilePath;
+	for (int i = 0; i < streamRange; i++)
+	{
+		for (int j = 0; j < streamRange; j++) {
+			for (int l = 0; l < streamRange; l++)
+			{
+			//	cout << stderr;
+				removeFilePath = folderBase + "_" + to_string(i - halfRange) + "_" + to_string(j - halfRange) + "_" + to_string(l - halfRange) + ".txt";
+				remove(removeFilePath.c_str());
 
+			}
+		}
+	}
+}
 bool multiFiles::is_empty(std::ifstream& pFile)
 {
 	return pFile.peek() == std::ifstream::traits_type::eof();

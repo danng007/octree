@@ -27,11 +27,13 @@ public:
 	void splitToFolders(string filePath);
 	void initialBackRootFiles();
 	void deleteEmptyFiles();
+	void deleteAllFiles();
 private:
 	stringstream sstm;
-	string folderBase = "D:/LaserImaging/dataFiles/test/";
-	ofstream* backRootStreams[7][7][7];
-	
+	string folderBase = "D:\\LaserImaging/dataFiles/mfTest/seperateFiles/";
+	ofstream* backRootStreams[9][9][9];
+	int streamRange = 9;
+	int halfRange = streamRange / 2;
 	bool multiFiles::is_empty(std::ifstream& pFile);
 };
 
